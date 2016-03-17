@@ -3,40 +3,45 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Backbone = require('backbone');
 
+var RouterMixin = {
+  componentWillMount : function() {
+    this.callback = (function() {
+      this.forceUpdate();
+    }).bind(this);
+
+    this.props.router.on("route", this.callback);
+  },
+  componentWillUnmount : function() {
+    this.props.router.off("route", this.callback);
+  }
+};
+
 var User = React.createClass({
+  mixins:[RouterMixin],
   getInitialState: function() {
     return {
-      toggleState: false,
       username: ''
     }
   },
-  doToggle: function(){
-    this.setState({ toggleState: !this.state.toggleState });
-  },
   handleUserName: function( name ){
+    name = name.replace(/\s+/g, '');
     this.setState({ username: name });
     this.props.model.set({'username': name});
     console.log(this.props.model.get('username'));
+    this.props.router.navigate('user/' + name, {trigger: true});
   },
   render: function(){
-    var class1, class2;
-    if(this.state.toggleState){
-      class1 = 'hidden';
-      class2 = '';
-    }else{
-      class1 = '';
-      class2 = 'hidden';
+    var id = this.props.model.get('username');
+    if(this.props.router.current == ''){
+      return(
+        <UserForm onSubmit={this.handleUserName} />
+      )
+    }else if (this.props.router.current == 'user/' + id){
+      return (
+        <UserName username={id} router={this.props.router}/>
+      )
     }
-    return (
-      <div>
-        <div className={class1}>
-          <UserForm onSubmit={this.handleUserName} doToggle={this.doToggle}/>
-        </div>
-        <div className={class2}>
-          <UserName username={this.state.username} doToggle2={this.doToggle}/>
-        </div>
-      </div>
-    );
+    return <div></div>
   }
 })
 
@@ -45,7 +50,6 @@ var UserForm = React.createClass({
     e.preventDefault();
     var username = $('#username').val();
     this.props.onSubmit(username);
-    this.props.doToggle();
   },
   render: function(){
     return (
@@ -61,13 +65,14 @@ var UserForm = React.createClass({
 
 
 var UserName = React.createClass({
-  editField: function(){
-    this.props.doToggle2();
+  handleClick: function(){
+    this.props.router.navigate('', {trigger: true})
   },
+
   render: function(){
     return (
       <div>
-        <button className="btn btn-default actual-user" id='edit' onClick={this.editField} type="submit">
+        <button className="btn btn-default actual-user" id='edit' onClick={this.handleClick} type="submit">
           <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
         </button>
         <h3 id='get-username'>Username: {this.props.username}</h3>

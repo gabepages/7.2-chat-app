@@ -9,7 +9,8 @@ var Message = Backbone.Model.extend({
     username: "username",
     content: "",
     createdAt: new Date()
-  }
+  },
+  idAttribute: "_id"
 });
 
 var MessageCollection = Backbone.Collection.extend({
