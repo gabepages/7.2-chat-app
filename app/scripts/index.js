@@ -13,6 +13,8 @@ var username = new UserName();
 var messageCollection = new MessageCollection();
 var userMessageCollection = new UserMessageCollection();
 
+messageCollection.comparator = 'createdAt';
+userMessageCollection.comparator = 'createdAt';
 
 //components
 var User = require('./components/user-form.jsx');

@@ -159,7 +159,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 var EnabledTextInput = React.createClass({displayName: "EnabledTextInput",
   render: function(){
     return (
-      React.createElement("form", {id: "text-form"}, 
+      React.createElement("form", {id: "text-form", onSubmit: this.props.onSubmit}, 
         React.createElement("input", {type: "text", className: "form-control", id: "text-input", placeholder: "Text here"}), 
          React.createElement("button", {type: "button", className: "btn btn-default", onClick: this.props.onSubmit}, "Send")
       )
@@ -291,6 +291,8 @@ var username = new UserName();
 var messageCollection = new MessageCollection();
 var userMessageCollection = new UserMessageCollection();
 
+messageCollection.comparator = 'createdAt';
+userMessageCollection.comparator = 'createdAt';
 
 //components
 var User = require('./components/user-form.jsx');

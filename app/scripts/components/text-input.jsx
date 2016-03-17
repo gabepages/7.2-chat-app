@@ -52,7 +52,7 @@ var TextInput = React.createClass({
 var EnabledTextInput = React.createClass({
   render: function(){
     return (
-      <form id='text-form'>
+      <form id='text-form' onSubmit={this.props.onSubmit}>
         <input type="text" className="form-control" id="text-input" placeholder="Text here" />
          <button type="button" className="btn btn-default" onClick={this.props.onSubmit}>Send</button>
       </form>
